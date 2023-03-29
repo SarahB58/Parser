@@ -2,16 +2,16 @@ grammar Little;
 //he asked for lexer grammer but just using the grammer give you a combo of parser(lowercase) and lexer (uppercase)
 //f  : '"' STRING '"';
 /* Program */
-program:  'PROGRAM' id 'BEGIN'  pgm_body  'END';
+program:  'PROGRAM' id 'BEGIN' pgm_body  'END';
 id:         IDENTIFIER;
 pgm_body:   decl func_declarations;
 decl:      string_decl decl | var_decl decl | ;
 
 /* Global String Declaration */
-string_decl:  'STRING' id ':=' str;
+string_decl:  'STRING' id ':=' str ';';
 str:          STRINGLITERAL;
 /* Variable Declaration */
-var_decl:    var_type id_list;
+var_decl:    var_type id_list ';';
 var_type:    'FLOAT' | 'INT';
 any_type:    var_type | 'VOID'; /*replace void?*/
 id_list:     id id_tail;
@@ -22,19 +22,18 @@ param_decl:      var_type id;
 param_decl_tail:     ',' param_decl param_decl_tail | ;
 /* Function Declarations */
 func_declarations:  func_decl func_declarations | ;
-func_decl:          'FUNCTION' any_type id '('param_decl_list')' 'BEGIN';
-func_body:          'END';
-/////////////////// AHHHHH WHAT IS THIS FIX LATER func_body:          decl stmt_list;
+func_decl:'FUNCTION' any_type id '('param_decl_list')' 'BEGIN' func_body 'END' ;
+func_body: decl stmt_list;
 /* Statement List */
 stmt_list:       stmt stmt_list | ;
 stmt:            base_stmt | if_stmt | while_stmt;
 base_stmt:       assign_stmt | read_stmt | write_stmt | return_stmt;
 /* Basic Statements */
-assign_stmt:     assign_expr ;
+assign_stmt:     assign_expr ';' ;
 assign_expr:     id ':=' expr;
-read_stmt:       'READ' '(' id_list ')';
-write_stmt:      'WRITE' '(' id_list ')';
-return_stmt:     'RETURN' expr ;
+read_stmt:       'READ' '(' id_list ')' ';';
+write_stmt:      'WRITE' '(' id_list ')' ';';
+return_stmt:     'RETURN' expr ';';
 /* Expressions */
 expr:           expr_prefix factor;
 expr_prefix:    expr_prefix factor addop | ;
@@ -54,7 +53,6 @@ cond:         expr compop expr;
 compop:      '<' | '>' | '=' | '!=' | '<=' | '>=';
 /* While statements */
 while_stmt:   'WHILE' '(' cond ')' decl stmt_list 'ENDWHILE';
-
 
 INTLITERAL
   : ('0' .. '9')+
@@ -78,7 +76,7 @@ COMMENT
 
 KEYWORD
     :
-    ('PROGRAM' | 'BEGIN' | 'END' | 'FUNCTION'| 'READ'| 'WRITE'
+    ('BEGIN' | 'END' | 'FUNCTION'| 'READ'| 'WRITE'
     'IF'| 'ELSE' | 'ENDIF' | 'WHILE' | 'ENDWHILE' | 'CONTINUE' | 'BREAK'|
     'RETURN' | 'INT' | 'VOID' | 'STRING' | 'FLOAT')
     ;
@@ -91,3 +89,5 @@ IDENTIFIER
     :
     ('a' .. 'z' | 'A' .. 'Z') (('a' .. 'z' | 'A' .. 'Z')|('0' .. '9'))*
     ;
+
+
